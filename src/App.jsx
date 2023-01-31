@@ -1,66 +1,84 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
-import poweredBy from "./powered-by-vitawind-dark.png";
+import React, { useState, useEffect } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0);
+import Card from './Components/Card';
+import Gameboard from './Components/Gameboard';
+import Header from './Components/Header';
+import Scoreboard from './Components/Scoreboard';
+
+export default function App() {
+  const [cards, setCards] = useState([]);
+  const [starwarsData, setStarwarsData] = useState([]);
+
+  const [cardClick, setCardClick] = useState(false);
+
+  useEffect(() => {
+    async function swAPIFetch() {
+      const resp = await fetch(
+        'https://akabab.github.io/starwars-api/api/all.json',
+        {
+          mode: 'cors',
+        }
+      );
+      const data = await resp.json();
+      const shortenedData = data.slice(0, 16);
+      setStarwarsData(shortenedData);
+    }
+    swAPIFetch();
+  }, []);
+  useEffect(() => {
+    const mappedCards = starwarsData.map((card, index) => ({
+      name: card.name,
+      image: card.image,
+      id: index + 1,
+      isClicked: false,
+    }));
+    setCards(mappedCards);
+    // console.log(mappedCards);
+  }, [starwarsData]);
+
+  const cardElements = cards.map((card) => (
+    <Card
+      className=""
+      name={card.name}
+      image={card.image}
+      cardClicked={() => cardClicked(card.id)}
+      value={card.value}
+      id={card.id}
+      key={card.id}
+    />
+  ));
+  // function shuffleCards(cardElements) {
+  //   let currentIndex = cardElements.length;
+  //   while (0 !== currentIndex) {
+  //     let randIndex = Math.floor(Math.random() * currentIndex);
+  //     currentIndex -= 1;
+  //     let tempArr = cardElements[currentIndex];
+  //     cardElements[currentIndex] = cardElements[randIndex];
+  //     cardElements[randIndex] = tempArr;
+  //   }
+  //   return cardElements;
+  // }
+  function cardClicked(id) {
+    setCards((oldCards) =>
+      oldCards.map((card) => {
+        if (card.id === id) {
+          console.log(`clicked: ${card.id}`);
+          shuffleCards(cardElements);
+          return { ...card, isClicked: !card.isClicked };
+        }
+        return card;
+      })
+    );
+  }
 
   return (
-    <div className="text-center selection:bg-green-900">
-      <header className="flex min-h-screen flex-col items-center justify-center bg-[#282c34] text-white">
-        <img
-          src={logo}
-          className="animate-speed h-60 motion-safe:animate-spin"
-          alt="logo"
-        />
-        <style>
-          {
-            "\
-            .animate-speed{\
-              animation-duration:20s;\
-            }\
-          "
-          }
-        </style>
-        <p className="bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-5xl font-black text-transparent selection:bg-transparent">
-          Vite + React + Tailwindcss v3
-        </p>
-        <p className="mt-3">
-          <button
-            type="button"
-            className="my-6 rounded bg-gray-300 px-2 py-2 text-[#282C34] transition-all hover:bg-gray-200"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code className="text-[#8d96a7]">App.jsx</code> and save to test
-          HMR updates.
-        </p>
-        <p className="mt-3 flex gap-3 text-center text-[#8d96a7]">
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="text-[#61dafb] transition-all hover:text-blue-400"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-        <img src={poweredBy} className="mx-auto my-8" alt="powered-by" />
-      </header>
+    <div className="h-full w-full">
+      <Header />
+      <Scoreboard />
+      <Gameboard className="h-auto w-auto" />
+      <div className="m-4 grid grid-cols-4 grid-rows-4 gap-5 p-2 text-black">
+        {cardElements}
+      </div>
     </div>
   );
 }
-
-export default App;

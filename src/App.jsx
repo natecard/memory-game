@@ -11,6 +11,8 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [won, setWon] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [cardRange, setCardRange] = useState(16);
+
   //Calling the SW API only called once on initial render
   useEffect(() => {
     async function swAPIFetch() {
@@ -21,11 +23,32 @@ export default function App() {
         }
       );
       const data = await resp.json();
-      const shortenedData = data.slice(0, 16);
+      const returnedData = data.slice(0, 88);
+      const removedData16 = returnedData.splice(16, 1);
+      const removedData23 = returnedData.splice(23, 1);
+      const removedData28 = returnedData.splice(24, 1);
+      const removedData32 = returnedData.splice(32, 1);
+      const removedData37 = returnedData.splice(37, 1);
+      const removedData40 = returnedData.splice(40, 1);
+      const removedData41 = returnedData.splice(41, 1);
+      const removedData46 = returnedData.splice(46, 3);
+      const removedData49 = returnedData.splice(49, 1);
+      const removedData51 = returnedData.splice(51, 1);
+      const removedData52 = returnedData.splice(52, 1);
+      const removedData56 = returnedData.splice(56, 1);
+      const removedData61 = returnedData.splice(61, 1);
+      const removedData62 = returnedData.splice(62, 1);
+      const removedData64 = returnedData.splice(64, 2);
+      const shortenedData = returnedData.slice(0, cardRange);
       setStarwarsData(shortenedData);
     }
     swAPIFetch();
   }, []);
+  function userRange(event) {
+    const { value } = event.target;
+    setCardRange(value);
+    console.log(value);
+  }
   //This maps the SW API to the cards state array
   useEffect(() => {
     const mappedCards = starwarsData.map((card, index) => ({
@@ -36,18 +59,7 @@ export default function App() {
     }));
     setCards(mappedCards);
   }, [starwarsData]);
-  //Rendering the cards array passing props
-  const cardElements = cards.map((card) => (
-    <Card
-      className=""
-      name={card.name}
-      isClicked={card.isClicked}
-      image={card.image}
-      cardClicked={() => cardClicked(card.id)}
-      id={card.id}
-      key={card.id}
-    />
-  ));
+
   //Shuffles cards randomly
   const getRandomIndex = (max) => Math.floor(Math.random() * max);
   const shuffleCards = (prevCards) => {
@@ -75,7 +87,7 @@ export default function App() {
         });
         return shuffleCards(updatedCards);
       } else {
-        console.log('you lost');
+        setShowModal(true);
         setScore(0);
         return shuffleCards(
           newCards.map((card) => ({ ...card, isClicked: false }))
@@ -101,19 +113,49 @@ export default function App() {
     }
   }, [cards]);
 
+  //Rendering the cards array passing props
+  const cardElements = cards.map((card) => (
+    <Card
+      className=""
+      name={card.name}
+      isClicked={card.isClicked}
+      image={card.image}
+      cardClicked={() => cardClicked(card.id)}
+      id={card.id}
+      key={card.id}
+    />
+  ));
+  function newGame() {
+    setWon(false);
+    setShowModal(false);
+  }
   return (
-    <div className="h-full w-full">
-      {won ? (
-        <Modal />
-      ) : (
-        <div>
-          <Header />
-          <Scoreboard score={score} />
-          <div className="m-4 grid grid-cols-4 grid-rows-4 gap-5 p-2 text-black">
-            {cardElements}
-          </div>
+    <div className="flex flex-col w-full h-full">
+      {(showModal && (
+        // <div className='fixed inset-0 z-10 w-full h-full '>
+        <Modal
+          className="transition-all duration-1000 "
+          newGame={() => newGame()}
+          userRange={userRange}
+          cardRange={cardRange}
+        />
+        // </div>
+      )) ||
+        (won && (
+          <Modal
+            className="transition-all duration-1000 "
+            newGame={() => newGame()}
+            userRange={userRange}
+            cardRange={cardRange}
+          />
+        ))}
+      <div>
+        <Header />
+        <Scoreboard score={score} />
+        <div className="grid gap-5 p-2 m-4 text-black md:grid-cols-4 md:grid-rows-4 lg:grid-cols-6 lg:grid-rows-3">
+          {cardElements}
         </div>
-      )}
+      </div>
     </div>
   );
 }

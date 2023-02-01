@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Card from './Components/Card';
-import Gameboard from './Components/Gameboard';
+import Modal from './Components/Modal';
 import Header from './Components/Header';
 import Scoreboard from './Components/Scoreboard';
 
@@ -10,6 +10,7 @@ export default function App() {
   const [starwarsData, setStarwarsData] = useState([]);
   const [score, setScore] = useState(0);
   const [won, setWon] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   //Calling the SW API only called once on initial render
   useEffect(() => {
     async function swAPIFetch() {
@@ -102,12 +103,17 @@ export default function App() {
 
   return (
     <div className="h-full w-full">
-      <Header />
-      <Scoreboard score={score} />
-      <Gameboard className="h-auto w-auto" />
-      <div className="m-4 grid grid-cols-4 grid-rows-4 gap-5 p-2 text-black">
-        {cardElements}
-      </div>
+      {won ? (
+        <Modal />
+      ) : (
+        <div>
+          <Header />
+          <Scoreboard score={score} />
+          <div className="m-4 grid grid-cols-4 grid-rows-4 gap-5 p-2 text-black">
+            {cardElements}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

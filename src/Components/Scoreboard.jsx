@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Scoreboard() {
+export default function Scoreboard(props) {
   return (
-    <div className="h-full bg-gradient-to-b from-slate-700 to-gray-200 ">
-      <div></div>
+    <div className="flex h-16 items-end justify-center bg-gradient-to-b from-slate-700 to-gray-200">
+      <div className="text-xl">Current Score: {props.score}</div>
     </div>
   );
 }

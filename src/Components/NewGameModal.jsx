@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Modal(props) {
+export default function NewGameModal(props) {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none">
@@ -17,7 +17,7 @@ export default function Modal(props) {
               </p>
               <div className="flex items-center">
                 <label className="p-2" htmlFor="cardRange">
-                  Number of Cards
+                  Number of Cards: {props.cardRange}
                 </label>
                 <input
                   onChange={() => props.userRange(event)}

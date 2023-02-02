@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import Card from './Components/Card';
-import Modal from './Components/Modal';
+import NewGameModal from './Components/NewGameModal';
+import WinModal from './Components/WinModal';
 import Header from './Components/Header';
 import Scoreboard from './Components/Scoreboard';
 
@@ -9,8 +10,9 @@ export default function App() {
   const [cards, setCards] = useState([]);
   const [starwarsData, setStarwarsData] = useState([]);
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   const [won, setWon] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const [cardRange, setCardRange] = useState(16);
 
   //Calling the SW API only called once on initial render
@@ -23,7 +25,7 @@ export default function App() {
         }
       );
       const data = await resp.json();
-      const returnedData = data.slice(0, 88);
+      const returnedData = data.slice(0, 89);
       const removedData16 = returnedData.splice(16, 1);
       const removedData23 = returnedData.splice(23, 1);
       const removedData28 = returnedData.splice(24, 1);
@@ -43,13 +45,14 @@ export default function App() {
       setStarwarsData(shortenedData);
     }
     swAPIFetch();
-  }, []);
+  }, [cardRange]);
+
   function userRange(event) {
     const { value } = event.target;
     setCardRange(value);
     console.log(value);
   }
-  //This maps the SW API to the cards state array
+  //This maps the fetched data to the cards state array
   useEffect(() => {
     const mappedCards = starwarsData.map((card, index) => ({
       name: card.name,
@@ -104,11 +107,18 @@ export default function App() {
     }
     setScore((prevVal) => prevVal + scoreCard.length);
   }, [cards]);
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore((prevVal) => prevVal + 1);
+    }
+  }, [score]);
   //if all cards are clicked then logs you won
   useEffect(() => {
-    const allSameValue = cards.every((card) => card.isClicked === true);
-    if (allSameValue && won === false) {
-      console.log('You won');
+    if (cards.length === 0) {
+      return;
+    }
+    const allSameValue = cards.every((card) => card.isClicked === false);
+    if (won == false && allSameValue) {
       setWon(true);
     }
   }, [cards]);
@@ -132,26 +142,26 @@ export default function App() {
   return (
     <div className="flex flex-col w-full h-full">
       {(showModal && (
-        // <div className='fixed inset-0 z-10 w-full h-full '>
-        <Modal
+        <NewGameModal
           className="transition-all duration-1000 "
           newGame={() => newGame()}
           userRange={userRange}
           cardRange={cardRange}
         />
-        // </div>
       )) ||
         (won && (
-          <Modal
+          <WinModal
             className="transition-all duration-1000 "
             newGame={() => newGame()}
             userRange={userRange}
             cardRange={cardRange}
+            score={score}
+            highScore={highScore}
           />
         ))}
       <div>
         <Header />
-        <Scoreboard score={score} />
+        <Scoreboard score={score} highScore={highScore} />
         <div className="grid gap-5 p-2 m-4 text-black md:grid-cols-4 md:grid-rows-4 lg:grid-cols-6 lg:grid-rows-3">
           {cardElements}
         </div>

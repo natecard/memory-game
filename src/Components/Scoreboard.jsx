@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function Scoreboard(props) {
   return (
-    <div className="flex items-end justify-center h-16 bg-gradient-to-bl from-blue-800 to-sky-300">
-      <div className="text-xl text-white">
+    <div className="flex items-end justify-center h-16 bg-black font-starWarsBorder">
+      <div className="text-xl text-yellow-300">
         Current Score: {props.score} High Score: {props.highScore}
       </div>
     </div>

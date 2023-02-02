@@ -159,10 +159,10 @@ export default function App() {
             highScore={highScore}
           />
         ))}
-      <div>
+      <div className="bg-black">
         <Header />
         <Scoreboard score={score} highScore={highScore} />
-        <div className="grid gap-5 p-2 m-4 text-black md:grid-cols-4 md:grid-rows-4 lg:grid-cols-6 lg:grid-rows-3">
+        <div className="grid gap-5 p-2 m-4 text-yellow-400 md:grid-cols-4 md:grid-rows-4 lg:grid-cols-6 lg:grid-rows-3">
           {cardElements}
         </div>
       </div>

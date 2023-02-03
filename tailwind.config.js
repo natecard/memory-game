@@ -3,7 +3,6 @@ module.exports = {
   theme: {
     fontFamily: {
       starWarsBorder: ['"SF Distant Galaxy Outline"'],
-      starWarsRounded: ['"SF Distant Galaxy Alternate"'],
       starWars: ['"SF Distant Galaxy"'],
     },
     extend: {},

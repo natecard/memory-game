@@ -1,7 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()]
-})
+  base: '/memory-game/',
+  plugins: [react()],
+  indexHTML: './index.html',
+  jsx: 'react',
+  assetsDir: './static',
+  rollupInputOptions: {
+    input: './src/main.jsx',
+  },
+});

@@ -117,7 +117,7 @@ export default function App() {
     if (cards.length === 0) {
       return;
     }
-    const allSameValue = cards.every((card) => card.isClicked === false);
+    const allSameValue = cards.every((card) => card.isClicked === true);
     if (won == false && allSameValue) {
       setWon(true);
     }
